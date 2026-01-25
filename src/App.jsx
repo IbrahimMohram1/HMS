@@ -14,6 +14,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgetPassword from "./AuthModule/Components/ForgetPassword/ForgetPassword";
 import ResetPassword from "./AuthModule/Components/ResetPassword/ResetPassword";
+import ChangePassword from "./AuthModule/Components/ChangePassword/ChangePassword";
+import Dashboard from "./DashboardModule/Dashboard";
 
 function App() {
   let routes = createBrowserRouter([
@@ -23,8 +25,10 @@ function App() {
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login /> },
-        { path: "forgetpass", element: <ForgetPassword /> },
+       { path: "forget-pass", element: <ForgetPassword /> },
         { path: "resetpass", element: <ResetPassword /> },
+        { path: "changepass", element: <ChangePassword /> },
+        { path: "dashboard", element: <Dashboard /> }
       ],
     },
   ]);
