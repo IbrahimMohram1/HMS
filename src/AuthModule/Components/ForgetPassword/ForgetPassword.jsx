@@ -36,7 +36,7 @@ export default function ForgetPassword() {
     <Box sx={{ flexGrow: 1, maxWidth: "95%", margin: "auto" }}>
       <Grid container spacing={2}>
         {/* LEFT SIDE */}
-        <Grid size={6} sx={{ p: 3 }}>
+        <Grid size={{ xs: 12, md: 6 }} sx={{ p: 3 }}>
           {/* LOGO */}
           <Box sx={{ mb: 3 }}>
             <Typography variant="h5" sx={{ fontWeight: 800, color: "#152C5B" }}>
@@ -119,7 +119,16 @@ export default function ForgetPassword() {
         </Grid>
 
         {/* RIGHT SIDE */}
-        <Grid size={6}>
+        <Grid
+          size={6}
+          sx={{
+            display: {
+              xs: "none",
+              sm: "none",
+              md: "block",
+            },
+          }}
+        >
           <Box
             sx={{
               margin: "auto",
