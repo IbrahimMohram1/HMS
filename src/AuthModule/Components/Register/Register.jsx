@@ -138,7 +138,7 @@ export default function Register() {
             </Box>
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 0.5 }}
@@ -154,7 +154,6 @@ export default function Register() {
                   fullWidth
                   placeholder="Please type here ..."
                   variant="filled"
-                  size="small"
                   sx={{
                     "& .MuiFilledInput-root": {
                       backgroundColor: "#F5F6F8",
@@ -170,7 +169,7 @@ export default function Register() {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item size={{ xs: 12, md: 6 }}>
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 0.5 }}
@@ -184,7 +183,6 @@ export default function Register() {
                   fullWidth
                   placeholder="Please type here ..."
                   variant="filled"
-                  size="small"
                   sx={{
                     "& .MuiFilledInput-root": {
                       backgroundColor: "#F5F6F8",
