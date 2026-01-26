@@ -14,7 +14,7 @@ export default function useAuth() {
     formData.append("country", data.country);
     formData.append("password", data.password);
     formData.append("confirmPassword", data.confirmPassword);
-    formData.append("role", data.role);
+    formData.append("role", "user");
 
     // Append profile image (file)
     if (data.profileImage && data.profileImage[0]) {
