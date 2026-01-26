@@ -16,6 +16,7 @@ import ForgetPassword from "./AuthModule/Components/ForgetPassword/ForgetPasswor
 import ResetPassword from "./AuthModule/Components/ResetPassword/ResetPassword";
 import ChangePassword from "./AuthModule/Components/ChangePassword/ChangePassword";
 import Dashboard from "./DashboardModule/Dashboard";
+import Register from "./AuthModule/Components/Register/Register";
 
 function App() {
   let routes = createBrowserRouter([
@@ -25,10 +26,11 @@ function App() {
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login /> },
-       { path: "forget-pass", element: <ForgetPassword /> },
+        { path: "register", element: <Register /> },
+        { path: "forgetpass", element: <ForgetPassword /> },
         { path: "resetpass", element: <ResetPassword /> },
         { path: "changepass", element: <ChangePassword /> },
-        { path: "dashboard", element: <Dashboard /> }
+        { path: "dashboard", element: <Dashboard /> },
       ],
     },
   ]);

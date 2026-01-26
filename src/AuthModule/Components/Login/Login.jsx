@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Box,
   Paper,
@@ -9,17 +9,17 @@ import {
   Button,
   IconButton,
   InputAdornment,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import loginImg from '../../../assets/images/Login img.jpg';
-import useAuth from '../../../Hooks/useAuth';
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import loginImg from "../../../assets/images/Login img.jpg";
+import useAuth from "../../../Hooks/useAuth";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: (theme.vars ?? theme).palette.text.secondary,
 }));
 
@@ -37,9 +37,9 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       await login(data);
-      console.log('Login Success');
+      console.log("Login Success");
     } catch (err) {
-      console.log('error', err);
+      console.log("error", err);
     }
   };
 
@@ -48,8 +48,8 @@ export default function Login() {
       <Grid container spacing={2}>
         {/* Form */}
         <Grid size={{ xs: 12, md: 6 }} sx={{ p: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#152C5B' }}>
-            Stay<span style={{ color: '#3252df' }}>cation.</span>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: "#152C5B" }}>
+            Stay<span style={{ color: "#3252df" }}>cation.</span>
           </Typography>
 
           <Typography variant="h5" sx={{ fontWeight: 700, my: 2 }}>
@@ -58,8 +58,8 @@ export default function Login() {
 
           <Typography sx={{ mb: 4, fontWeight: 300 }}>
             If you don't have an account register <br />
-            You can{' '}
-            <span style={{ color: '#152C5B', fontWeight: 800 }}>
+            You can{" "}
+            <span style={{ color: "#152C5B", fontWeight: 800 }}>
               Register here !
             </span>
           </Typography>
@@ -67,8 +67,8 @@ export default function Login() {
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             {/* Email */}
             <Typography
-               variant="standard"
-              sx={{ fontWeight: 600, color: '#152C5B', mb: 1 }}
+              variant="standard"
+              sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
             >
               Email Address
             </Typography>
@@ -76,9 +76,9 @@ export default function Login() {
             <TextField
               fullWidth
               placeholder="Please type here ..."
-               variant="standard"
+              variant="standard"
               autoComplete="email"
-              {...register('email', { required: 'Email is required' })}
+              {...register("email", { required: "Email is required" })}
               error={!!errors.email}
               helperText={errors.email?.message}
             />
@@ -86,18 +86,18 @@ export default function Login() {
             {/* Password */}
             <Typography
               variant="subtitle2"
-              sx={{ fontWeight: 600, color: '#152C5B', mb: 1, mt: 2 }}
+              sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}
             >
               Password
             </Typography>
 
             <TextField
               fullWidth
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Please type here ..."
-               variant="standard"
+              variant="standard"
               autoComplete="current-password"
-              {...register('password', { required: 'Password is required' })}
+              {...register("password", { required: "Password is required" })}
               error={!!errors.password}
               helperText={errors.password?.message}
               InputProps={{
@@ -116,7 +116,7 @@ export default function Login() {
 
             <Typography
               variant="body2"
-              sx={{ mt: 1, color: '#4D4D4D', textAlign: 'right' }}
+              sx={{ mt: 1, color: "#4D4D4D", textAlign: "right" }}
             >
               Forgot Password ?
             </Typography>
@@ -125,11 +125,11 @@ export default function Login() {
               type="submit"
               variant="contained"
               sx={{
-                width: '100%',
+                width: "100%",
                 my: 5,
                 py: 1.6,
-                backgroundColor: '#3252DF',
-                borderRadius: '8px',
+                backgroundColor: "#3252DF",
+                borderRadius: "8px",
               }}
             >
               Login
@@ -140,27 +140,27 @@ export default function Login() {
         {/* Image – hidden on mobile */}
         <Grid
           size={{ xs: 12, md: 6 }}
-          sx={{ display: { xs: 'none', md: 'block' } }}
+          sx={{ display: { xs: "none", md: "block" } }}
         >
           <Item>
-            <Box sx={{ width: '100%', height: '100vh', position: 'relative' }}>
+            <Box sx={{ width: "100%", height: "100vh", position: "relative" }}>
               <img
                 src={loginImg}
                 alt="Login"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '25px',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "25px",
+                  objectFit: "cover",
                 }}
               />
 
               <Box
                 sx={{
-                  position: 'absolute',
+                  position: "absolute",
                   bottom: 40,
                   left: 40,
-                  color: '#fff',
+                  color: "#fff",
                 }}
               >
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>

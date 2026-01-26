@@ -5,7 +5,32 @@ import { useNavigate } from "react-router-dom";
 export default function useAuth() {
   const navigate = useNavigate();
 
-  // ----------------- Login -----------------
+  const register = async (data) => {
+    const formData = new FormData();
+    // Append text fields
+    formData.append("userName", data.userName);
+    formData.append("email", data.email);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("country", data.country);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("role", data.role);
+
+    // Append profile image (file)
+    if (data.profileImage && data.profileImage[0]) {
+      formData.append("profileImage", data.profileImage[0]);
+    }
+
+    try {
+      const response = await axiosClient.post("/api/v0/portal/users", formData);
+      console.log(response);
+      toast.success(response?.data?.message || "Registration successful");
+      navigate("/"); // Navigate to login
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Registration failed");
+    }
+  };
+
   const login = async (data) => {
     try {
       const response = await axiosClient.post(
@@ -82,5 +107,12 @@ export default function useAuth() {
     }
   };
 
-  return { login, logout, forgetPassword, resetPassword, changePassword };
+  return {
+    login,
+    logout,
+    register,
+    forgetPassword,
+    resetPassword,
+    changePassword,
+  };
 }
