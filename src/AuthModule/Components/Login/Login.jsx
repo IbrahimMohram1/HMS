@@ -45,7 +45,14 @@ export default function Login() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, maxHeight: "100vh" }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        maxHeight: "100vh",
+        width: "90%",
+        margin: "auto",
+      }}
+    >
       <Grid container spacing={2}>
         {/* Form */}
         <Grid size={{ xs: 12, md: 6 }} sx={{ p: 3 }}>
@@ -144,7 +151,7 @@ export default function Login() {
                 type="submit"
                 variant="contained"
                 sx={{
-                  width: "100%",
+                  width: "50%",
                   my: 5,
                   py: 1.6,
                   backgroundColor: "#3252DF",
