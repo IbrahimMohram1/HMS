@@ -27,7 +27,7 @@ export default function Register() {
     formState: { errors },
     handleSubmit,
     watch,
-  } = useForm();  
+  } = useForm();
 
   const password = watch("password");
 

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import loginImg from "../../../assets/images/Login img.jpg";
+import loginImg from "../../../assets/images/Login.jpg";
 import { toast } from "react-toastify";
 import axiosClient from "../../../Utils/AxiosClient";
 import useAuth from "../../../Hooks/useAuth";
@@ -35,127 +35,142 @@ export default function ChangePassword() {
 
   const { changePassword } = useAuth();
 
-
-
   const onSubmit = async (data) => {
     try {
       await changePassword(data);
-      console.log('changePassword Success');
+      console.log("changePassword Success");
     } catch (err) {
-      console.log('error', err);
+      console.log("error", err);
     }
   };
 
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ flexGrow: 1, height: "100%" }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
         {/* Form */}
         <Grid size={{ xs: 12, md: 6 }} sx={{ p: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, color: "#152C5B" }}>
             Stay<span style={{ color: "#3252df" }}>cation.</span>
           </Typography>
 
-          <Typography variant="h5" sx={{ fontWeight: 700, my: 2 }}>
-            Change Password
-          </Typography>
-
-          <Typography sx={{ mb: 4, fontWeight: 300 }}>
-            Secure your account by updating your password
-          </Typography>
-
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            {/* Old Password */}
-            <Typography sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}>
-              Old Password
-            </Typography>
-            <TextField
-              fullWidth
-              type={showOld ? "text" : "password"}
-               variant="standard"
-              autoComplete="current-password"
-              
-              {...register("oldPassword", {
-                required: "Old password is required",
-              })}
-              error={!!errors.oldPassword}
-              helperText={errors.oldPassword?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowOld(!showOld)}>
-                      {showOld ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            {/* New Password */}
-            <Typography sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}>
-              New Password
-            </Typography>
-            <TextField
-              fullWidth
-              type={showNew ? "text" : "password"}
-               variant="standard"
-              autoComplete="new-password"
-              {...register("newPassword", {
-                required: "New password is required",
-              })}
-              error={!!errors.newPassword}
-              helperText={errors.newPassword?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowNew(!showNew)}>
-                      {showNew ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            {/* Confirm Password */}
-            <Typography sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}>
-              Confirm Password
-            </Typography>
-            <TextField
-              fullWidth
-              type={showConfirm ? "text" : "password"}
-              variant="standard"
-              autoComplete="new-password"
-              {...register("confirmPassword", {
-                required: "Confirm password is required",
-              })}
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword?.message}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowConfirm(!showConfirm)}
-                    >
-                      {showConfirm ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                width: "100%",
-                my: 5,
-                py: 1.6,
-                backgroundColor: "#3252DF",
-                borderRadius: "8px",
-              }}
-            >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+            }}
+          >
+            <Typography variant="h5" sx={{ fontWeight: 700, my: 2 }}>
               Change Password
-            </Button>
+            </Typography>
+
+            <Typography sx={{ mb: 4, fontWeight: 300 }}>
+              Secure your account by updating your password
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              {/* Old Password */}
+              <Typography sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}>
+                Old Password
+              </Typography>
+              <TextField
+                fullWidth
+                type={showOld ? "text" : "password"}
+                variant="standard"
+                autoComplete="current-password"
+                {...register("oldPassword", {
+                  required: "Old password is required",
+                })}
+                error={!!errors.oldPassword}
+                helperText={errors.oldPassword?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowOld(!showOld)}>
+                        {showOld ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* New Password */}
+              <Typography
+                sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}
+              >
+                New Password
+              </Typography>
+              <TextField
+                fullWidth
+                type={showNew ? "text" : "password"}
+                variant="standard"
+                autoComplete="new-password"
+                {...register("newPassword", {
+                  required: "New password is required",
+                })}
+                error={!!errors.newPassword}
+                helperText={errors.newPassword?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowNew(!showNew)}>
+                        {showNew ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* Confirm Password */}
+              <Typography
+                sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}
+              >
+                Confirm Password
+              </Typography>
+              <TextField
+                fullWidth
+                type={showConfirm ? "text" : "password"}
+                variant="standard"
+                autoComplete="new-password"
+                {...register("confirmPassword", {
+                  required: "Confirm password is required",
+                })}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowConfirm(!showConfirm)}>
+                        {showConfirm ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  width: "100%",
+                  my: 5,
+                  py: 1.6,
+                  backgroundColor: "#3252DF",
+                  borderRadius: "8px",
+                }}
+              >
+                Change Password
+              </Button>
+            </Box>
           </Box>
         </Grid>
 
@@ -165,7 +180,16 @@ export default function ChangePassword() {
           sx={{ display: { xs: "none", md: "block" } }}
         >
           <Item>
-            <Box sx={{ width: "100%", height: "100vh", position: "relative" }}>
+            <Box
+              sx={{
+                width: "100%",
+                height: "90vh",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <img
                 src={loginImg}
                 alt="Change Password"
