@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import resetPass from "../../../assets/images/forgatImage.jpg";
 import useAuth from "../../../Hooks/useAuth";
 import { useForm, useWatch } from "react-hook-form";
@@ -9,8 +9,11 @@ import {
   TextField,
   Button,
   FormHelperText,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function ResetPassword() {
   const {
@@ -18,11 +21,16 @@ export default function ResetPassword() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-  });
+  } = useForm({ mode: "onBlur" });
 
   const { resetPassword } = useAuth();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
+  const handleToggleConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev);
 
   const onSubmit = async (data) => {
     try {
@@ -31,11 +39,13 @@ export default function ResetPassword() {
       console.log("error", err);
     }
   };
+
   const newPassword = useWatch({
     control,
     name: "password",
     defaultValue: "",
   });
+
   return (
     <>
       <Box sx={{ flexGrow: 1, maxWidth: "95%", margin: "auto" }}>
@@ -52,7 +62,6 @@ export default function ResetPassword() {
               </Typography>
             </Box>
 
-            {/* FORM CENTER */}
             <Box
               sx={{
                 margin: "auto",
@@ -83,6 +92,7 @@ export default function ResetPassword() {
               </Typography>
 
               <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+                {/* Email */}
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
@@ -105,6 +115,8 @@ export default function ResetPassword() {
                 <FormHelperText sx={{ color: "red" }}>
                   {errors.email?.message}
                 </FormHelperText>
+
+                {/* Password */}
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
@@ -113,23 +125,34 @@ export default function ResetPassword() {
                 </Typography>
                 <TextField
                   sx={{ marginBottom: "15px" }}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   fullWidth
                   placeholder="Please type here ..."
                   variant="standard"
                   {...register("password", {
-                    required: "password is required",
+                    required: "Password is required",
                     pattern: {
                       value:
                         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                       message:
-                        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                        "Password must be at least 8 characters, with uppercase, lowercase, number, and special character",
                     },
                   })}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleTogglePassword}>
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <FormHelperText sx={{ color: "red" }}>
                   {errors.password?.message}
                 </FormHelperText>
+
+                {/* Confirm Password */}
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
@@ -138,8 +161,8 @@ export default function ResetPassword() {
                 </Typography>
                 <TextField
                   sx={{ marginBottom: "15px" }}
+                  type={showConfirmPassword ? "text" : "password"}
                   fullWidth
-                  type="password"
                   placeholder="Please type here ..."
                   variant="standard"
                   {...register("confirmPassword", {
@@ -147,10 +170,25 @@ export default function ResetPassword() {
                     validate: (value) =>
                       value === newPassword || "Passwords do not match",
                   })}
-                />{" "}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleToggleConfirmPassword}>
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
                 <FormHelperText sx={{ color: "red" }}>
                   {errors.confirmPassword?.message}
                 </FormHelperText>
+
+                {/* OTP */}
                 <Typography
                   variant="subtitle2"
                   sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
@@ -163,16 +201,14 @@ export default function ResetPassword() {
                   placeholder="Please type here ..."
                   variant="standard"
                   {...register("seed", {
-                    required: "seed is required",
-                    minLength: {
-                      value: 4,
-                      message: "OTP must be  4 digit",
-                    },
+                    required: "OTP is required",
+                    minLength: { value: 4, message: "OTP must be 4 digits" },
                   })}
                 />
                 <FormHelperText sx={{ color: "red" }}>
                   {errors.seed?.message}
                 </FormHelperText>
+
                 <Button
                   type="submit"
                   variant="contained"
@@ -182,9 +218,7 @@ export default function ResetPassword() {
                     py: 1.6,
                     backgroundColor: "#3252DF",
                     borderRadius: "8px",
-                    "&:hover": {
-                      backgroundColor: "#2841BE",
-                    },
+                    "&:hover": { backgroundColor: "#2841BE" },
                   }}
                 >
                   Send Email
@@ -224,19 +258,8 @@ export default function ResetPassword() {
                 <img
                   src={resetPass}
                   alt="Forget Password"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                {/* Overlay */}
-                <Box
-                  sx={{
-                    position: "relative",
-                  }}
-                />
-                {/* Overlay text */}
                 <Box
                   sx={{
                     position: "absolute",
