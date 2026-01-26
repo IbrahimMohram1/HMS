@@ -52,7 +52,7 @@ export default function Register() {
       <Grid container spacing={0} sx={{ minHeight: "100vh" }}>
         {/* Left Side: Form */}
         <Grid
-          size={6}
+          size={{ xs: 12, md: 6 }}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -201,41 +201,6 @@ export default function Register() {
                 />
               </Grid>
             </Grid>
-
-            <Box>
-              <Typography
-                variant="subtitle2"
-                sx={{ fontWeight: 600, color: "#152C5B", mb: 0.5 }}
-              >
-                Role
-              </Typography>
-              <TextField
-                {...register("role", { required: "Role is required" })}
-                error={!!errors.role}
-                helperText={errors.role?.message}
-                select
-                fullWidth
-                variant="filled"
-                size="small"
-                defaultValue=""
-                sx={{
-                  "& .MuiFilledInput-root": {
-                    backgroundColor: "#F5F6F8",
-                    borderRadius: "12px",
-                    "&:before, &:after": { display: "none" },
-                    "&:hover": { backgroundColor: "#EEF0F3" },
-                    "&.Mui-focused": { backgroundColor: "#EEF0F3" },
-                  },
-                  "& .MuiFilledInput-input": {
-                    padding: "16px 20px",
-                    color: "#152C5B",
-                  },
-                }}
-              >
-                <MenuItem value="user">User</MenuItem>
-                <MenuItem value="admin">Admin</MenuItem>
-              </TextField>
-            </Box>
 
             <Box>
               <Typography
