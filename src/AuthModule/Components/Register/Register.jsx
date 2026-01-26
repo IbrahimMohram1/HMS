@@ -27,7 +27,7 @@ export default function Register() {
     formState: { errors },
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm({ mode: "onBlur" });
 
   const password = watch("password");
 

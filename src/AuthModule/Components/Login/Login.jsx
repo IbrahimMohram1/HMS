@@ -29,7 +29,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ mode: "onBlur" });
 
   const { login } = useAuth();
 

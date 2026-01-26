@@ -58,7 +58,7 @@ export default function useAuth() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
     toast.info("Logged out successfully");
-    navigate("/login");
+    navigate("/");
   };
 
   // ----------------- Forget Password -----------------
