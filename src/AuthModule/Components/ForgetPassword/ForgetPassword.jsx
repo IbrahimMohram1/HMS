@@ -132,7 +132,7 @@ export default function ForgetPassword() {
           <Box
             sx={{
               margin: "auto",
-              height: "90vh",
+              height: "92vh",
               position: "relative",
               p: 2,
             }}

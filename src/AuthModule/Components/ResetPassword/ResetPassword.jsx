@@ -53,7 +53,7 @@ export default function ResetPassword() {
           {/* LEFT SIDE */}
           <Grid size={{ xs: 12, md: 6 }} sx={{ p: 3 }}>
             {/* LOGO */}
-            <Box sx={{ mb: 3 }}>
+            <Box>
               <Typography
                 variant="h5"
                 sx={{ fontWeight: 800, color: "#152C5B" }}
@@ -68,7 +68,7 @@ export default function ResetPassword() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                height: "80vh",
+                height: "100%",
               }}
             >
               <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
@@ -81,8 +81,8 @@ export default function ResetPassword() {
                 <Link
                   to="/"
                   style={{
-                    color: "#152C5B",
-                    fontWeight: 800,
+                    color: "#d82234ff",
+                    fontWeight: 600,
                     textDecoration: "none",
                     cursor: "pointer",
                   }}
@@ -95,7 +95,7 @@ export default function ResetPassword() {
                 {/* Email */}
                 <Typography
                   variant="subtitle2"
-                  sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
+                  sx={{ fontWeight: 600, color: "#152C5B" }}
                 >
                   Email
                 </Typography>
@@ -214,7 +214,6 @@ export default function ResetPassword() {
                   variant="contained"
                   sx={{
                     width: "50%",
-                    my: 5,
                     py: 1.6,
                     backgroundColor: "#3252DF",
                     borderRadius: "8px",
