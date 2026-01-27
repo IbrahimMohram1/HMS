@@ -14,7 +14,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import loginImg from "../../../assets/images/Login.jpg";
 import { toast } from "react-toastify";
-import axiosClient from "../../../Utils/AxiosClient";
 import useAuth from "../../../Hooks/useAuth";
 
 const Item = styled(Paper)(() => ({

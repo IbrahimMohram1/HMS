@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import axiosClient from "../Utils/AxiosClient";
+import axiosClient from "../Api/AxiosClient.js";
 import { useNavigate } from "react-router-dom";
 
 export default function useAuth() {
