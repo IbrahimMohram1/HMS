@@ -15,8 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import ForgetPassword from "./AuthModule/Components/ForgetPassword/ForgetPassword";
 import ResetPassword from "./AuthModule/Components/ResetPassword/ResetPassword";
 import ChangePassword from "./AuthModule/Components/ChangePassword/ChangePassword";
-import Dashboard from "./DashboardModule/Dashboard";
+import Dashboard from "./DashboardModule/Components/Dashboard/Dashboard";
 import Register from "./AuthModule/Components/Register/Register";
+import DashboardLayout from "./Shared/DashboardLayout/DashboardLayout";
+import BookingList from "./DashboardModule/Components/BookingList/BookingList";
 
 function App() {
   let routes = createBrowserRouter([
@@ -31,6 +33,20 @@ function App() {
         { path: "resetpass", element: <ResetPassword /> },
         { path: "changepass", element: <ChangePassword /> },
         { path: "dashboard", element: <Dashboard /> },
+      ],
+    },
+    {
+      path: "/dashboard",
+      element: <DashboardLayout />,
+      children: [
+        {
+          index: true,
+          element: <Dashboard />,
+        },
+        {
+          path: "booking",
+          element: <BookingList />,
+        },
       ],
     },
   ]);
