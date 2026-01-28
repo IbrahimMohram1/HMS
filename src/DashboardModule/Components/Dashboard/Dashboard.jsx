@@ -7,31 +7,22 @@ import WorkIcon from "@mui/icons-material/Work";
 import { PieChart } from "@mui/x-charts/PieChart";
 export default function Dashboard() {
   let { logout } = useAuth();
-  const data = [
-    { label: "Group A", value: 400, color: "#0088FE" },
-    { label: "Group B", value: 300, color: "#00C49F" },
-    { label: "Group C", value: 300, color: "#FFBB28" },
-    { label: "Group D", value: 200, color: "#FF8042" },
-  ];
 
-  const settings = {
-    margin: { right: 5 },
-    width: 200,
-    height: 200,
-    hideLegend: true,
-  };
   return (
     <>
-      <Box sx={{ flexGrow: 1, margin: "auto" }}>
-        <Grid container spacing={3} sx={{ gap: 15, justifyContent: "center" }}>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid
+          container
+          spacing={3}
+          sx={{ width: "100%", justifyContent: "center" }}
+        >
           <Grid
             sx={{
               backgroundColor: "#1A1B1E",
               color: "#fff",
             }}
             item
-            xs={12}
-            md={4}
+            size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
@@ -41,7 +32,6 @@ export default function Dashboard() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 15,
               }}
             >
               <Typography size={6} variant="h5" component="div">
@@ -61,8 +51,7 @@ export default function Dashboard() {
               color: "#fff",
             }}
             item
-            xs={12}
-            md={4}
+            size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
@@ -72,7 +61,6 @@ export default function Dashboard() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 15,
               }}
             >
               <Typography size={6} variant="h5" component="div">
@@ -92,8 +80,7 @@ export default function Dashboard() {
               color: "#fff",
             }}
             item
-            xs={12}
-            md={4}
+            size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
@@ -103,7 +90,6 @@ export default function Dashboard() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 15,
               }}
             >
               <Typography size={6} variant="h5" component="div">
@@ -119,11 +105,11 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ flexGrow: 1, margin: "auto", mt: 25 }}>
+      <Box sx={{ mt: 25 }}>
         <Grid
           container
           spacing={2}
-          sx={{ gap: 15, justifyContent: "center", mt: 5 }}
+          sx={{ display: "flex", justifyContent: "space-between", mt: 5 }}
         >
           <PieChart
             size={{ xs: 12, md: 6 }}
@@ -143,6 +129,7 @@ export default function Dashboard() {
               legend: {
                 sx: {
                   display: "flex",
+                  width: "100%",
                   flexDirection: "column",
                   justifyContent: "space-between",
                 },
@@ -154,6 +141,7 @@ export default function Dashboard() {
               },
             }}
             size={{ xs: 12, md: 6 }}
+            sx={{ width: "100%" }}
             series={[
               {
                 data: [

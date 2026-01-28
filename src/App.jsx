@@ -19,6 +19,8 @@ import Dashboard from "./DashboardModule/Components/Dashboard/Dashboard";
 import Register from "./AuthModule/Components/Register/Register";
 import DashboardLayout from "./Shared/DashboardLayout/DashboardLayout";
 import BookingList from "./DashboardModule/Components/BookingList/BookingList";
+import AdminProtectedRoute from "./Shared/AdminProtectedRoute/AdminProtectedRoute";
+import { AuthContextProvider } from "./Context/AuthContext";
 
 function App() {
   let routes = createBrowserRouter([
@@ -37,7 +39,11 @@ function App() {
     },
     {
       path: "/dashboard",
-      element: <DashboardLayout />,
+      element: (
+        <AdminProtectedRoute allowedRoles={["admin"]}>
+          <DashboardLayout />
+        </AdminProtectedRoute>
+      ),
       children: [
         {
           index: true,
@@ -53,16 +59,18 @@ function App() {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        closeOnClick={false}
-        rtl={false}
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-      <RouterProvider router={routes}></RouterProvider>
+      <AuthContextProvider>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          closeOnClick={false}
+          rtl={false}
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+        <RouterProvider router={routes}></RouterProvider>
+      </AuthContextProvider>
     </>
   );
 }

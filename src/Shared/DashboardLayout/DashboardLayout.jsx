@@ -21,6 +21,7 @@ export default function DashboardLayout() {
         sx={{
           flexGrow: 1,
           p: 3,
+          overflow: "hidden",
         }}
       >
         <Outlet />

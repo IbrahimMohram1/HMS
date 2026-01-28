@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Drawer,
   List,
@@ -12,12 +12,14 @@ import { NavLink } from "react-router-dom";
 import { dashboardDrawerRoutes } from "../../Hooks/dashboardRoutes";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { AuthContext } from "../../Context/AuthContext";
 
 export default function SideBar() {
   const drawerWidth = 240;
   const collapsedWidth = 90;
 
   const [open, setOpen] = useState(true);
+  let { logout } = useContext(AuthContext);
 
   return (
     <Drawer
@@ -58,37 +60,46 @@ export default function SideBar() {
           gap: 1,
         }}
       >
-        {dashboardDrawerRoutes.map((route) => (
-          <ListItem key={route.path} disablePadding sx={{ width: "100%" }}>
-            <ListItemButton
-              component={NavLink}
-              to={route.path}
-              sx={{
-                display: "flex",
-                flexDirection: open ? "row" : "column", // row لما مفتوح، column لما مقفول
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                width: "100%",
-                "&.active": {
-                  backgroundColor: "action.selected",
-                },
-                px: 2,
-              }}
-            >
-              {/* icon */}
-              {route.icon && <route.icon />}
+        {dashboardDrawerRoutes.map((route, index) => {
+          const isLogout = route.action === "logout";
 
-              {/* text */}
-              {open && (
-                <ListItemText
-                  primary={route.label}
-                  sx={{ ml: open ? 1 : 0, textAlign: "center" }}
-                />
-              )}
-            </ListItemButton>
-          </ListItem>
-        ))}
+          return (
+            <ListItem key={route.label} disablePadding sx={{ width: "100%" }}>
+              <ListItemButton
+                component={isLogout ? "button" : NavLink}
+                to={isLogout ? undefined : route.path}
+                onClick={() => {
+                  if (isLogout) {
+                    logout();
+                  }
+                }}
+                sx={{
+                  display: "flex",
+                  flexDirection: open ? "row" : "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  "&.active": {
+                    backgroundColor: "action.selected",
+                  },
+                  px: 2,
+                }}
+              >
+                {/* icon */}
+                {route.icon && <route.icon />}
+
+                {/* text */}
+                {open && (
+                  <ListItemText
+                    primary={route.label}
+                    sx={{ ml: open ? 1 : 0, textAlign: "center" }}
+                  />
+                )}
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
     </Drawer>
   );
