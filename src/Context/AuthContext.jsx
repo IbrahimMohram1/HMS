@@ -5,27 +5,29 @@ export const AuthContext = createContext(null);
 
 export function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ save user data from token
   const saveUserData = () => {
     const token = localStorage.getItem("access_token");
-
     if (token) {
-      const cleanToken = token.replace("Bearer ", ""); // 🔥 الحل
-      const decoded = jwtDecode(cleanToken);
-      console.log("DECODED:", decoded);
-      setUser(decoded);
+      try {
+        const cleanToken = token.replace("Bearer ", "");
+        const decoded = jwtDecode(cleanToken);
+        setUser(decoded); // role، id، أي بيانات من token
+      } catch (err) {
+        console.error("Invalid token", err);
+        localStorage.removeItem("access_token");
+        setUser(null);
+      }
     }
   };
 
-  // ✅ logout
   const logout = () => {
     localStorage.removeItem("access_token");
     setUser(null);
   };
 
-  const [loading, setLoading] = useState(true);
-
+  // عند mount
   useEffect(() => {
     saveUserData();
     setLoading(false);
@@ -33,12 +35,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        saveUserData,
-        loading,
-        logout,
-      }}
+      value={{ user, setUser, saveUserData, logout, loading }}
     >
       {children}
     </AuthContext.Provider>

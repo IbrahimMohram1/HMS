@@ -1,9 +1,13 @@
 import { toast } from "react-toastify";
 import axiosClient from "../Api/AxiosClient.js";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 export default function useAuth() {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(AuthContext);
 
   const register = async (data) => {
     const formData = new FormData();
@@ -33,6 +37,7 @@ export default function useAuth() {
 
   const login = async (data) => {
     try {
+      localStorage.removeItem("access_token");
       const response = await axiosClient.post(
         "/api/v0/portal/users/login",
         data,
@@ -40,13 +45,13 @@ export default function useAuth() {
       const { token, user } = response.data.data;
 
       localStorage.setItem("access_token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      console.log(localStorage.getItem("access_token"));
+      const decoded = jwtDecode(token.replace("Bearer ", ""));
+      setUser(decoded);
 
       toast.success(response.data.message || "Login successful");
       navigate("/dashboard");
 
-      return user;
+      return decoded;
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
       throw err;
