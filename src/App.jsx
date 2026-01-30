@@ -21,6 +21,8 @@ import DashboardLayout from "./Shared/DashboardLayout/DashboardLayout";
 import BookingList from "./DashboardModule/Components/BookingList/BookingList";
 import AdminProtectedRoute from "./Shared/AdminProtectedRoute/AdminProtectedRoute";
 import { AuthContextProvider } from "./Context/AuthContext";
+import UsersList from "./DashboardModule/Components/UsersList/UsersList";
+import Rooms from "./DashboardModule/Components/Rooms/Rooms";
 
 function App() {
   let routes = createBrowserRouter([
@@ -53,6 +55,8 @@ function App() {
           path: "booking",
           element: <BookingList />,
         },
+        {path: "users", element: <UsersList />},  
+        {path: "rooms", element: <Rooms />},  
       ],
     },
   ]);
