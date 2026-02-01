@@ -2,41 +2,58 @@ import { useCallback } from "react";
 import axiosClient from "../Api/AxiosClient";
 
 export default function useRooms() {
-  // Get rooms
+  const getHeaders = () => ({
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  });
+
   const fetchRooms = useCallback(async (page = 1, size = 20) => {
-    try {
-      const res = await axiosClient.get(
-        `/api/v0/admin/rooms?page=${page}&size=${size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      return res.data.data;
-    } catch (error) {
-      console.error("Error fetching rooms:", error.response || error);
-      throw error;
-    }
+    const res = await axiosClient.get(`/api/v0/admin/rooms?page=${page}&size=${size}`, { 
+      headers: getHeaders() 
+    });
+    return res.data.data;
   }, []);
 
-  // Delete room
-  const deleteRoom = useCallback(async (roomId) => {
-    try {
-      const res = await axiosClient.delete(
-        `/api/v0/admin/rooms/${roomId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      return res.data;
-    } catch (error) {
-      console.error("Error deleting room:", error.response || error);
-      throw error;
-    }
+  const getRoomById = useCallback(async (id) => {
+    const res = await axiosClient.get(`/api/v0/admin/rooms/${id}`, { 
+      headers: getHeaders() 
+    });
+    return res.data.data.room;
   }, []);
 
-  return { fetchRooms, deleteRoom };
+  const createRoom = useCallback(async (formData) => {
+    const res = await axiosClient.post(`/api/v0/admin/rooms`, formData, {
+      headers: { ...getHeaders(), "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  }, []);
+
+  const updateRoom = useCallback(async (id, formData) => {
+    const res = await axiosClient.put(`/api/v0/admin/rooms/${id}`, formData, {
+      headers: { ...getHeaders(), "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  }, []);
+
+  const deleteRoom = useCallback(async (id) => {
+    const res = await axiosClient.delete(`/api/v0/admin/rooms/${id}`, { 
+      headers: getHeaders() 
+    });
+    return res.data;
+  }, []);
+
+  const fetchFacilities = useCallback(async () => {
+    const res = await axiosClient.get(`/api/v0/admin/room-facilities`, { 
+      headers: getHeaders() 
+    });
+    return res.data.data.facilities;
+  }, []);
+
+  return {
+    fetchRooms,
+    getRoomById,
+    createRoom,
+    updateRoom,
+    deleteRoom,
+    fetchFacilities,
+  };
 }

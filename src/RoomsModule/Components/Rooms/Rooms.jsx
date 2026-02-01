@@ -1,3 +1,4 @@
+// ================= Rooms.jsx =================
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -21,15 +22,27 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Link, useNavigate } from "react-router-dom";
 import useRooms from "../../../Hooks/useRooms";
 import DeleteConfirmation from "../../../Shared/delete confirmation/delete confirmation";
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';import EditSquareIcon from '@mui/icons-material/EditSquare';
+import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
 
 export default function Rooms() {
-  const { fetchRooms, deleteRoom } = useRooms();
+  const { fetchRooms, deleteRoom, fetchFacilities } = useRooms();
+  const navigate = useNavigate();
+
+
+
 
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  // Filters
+  const [selectedFacility, setSelectedFacility] = useState("");
+  const [facilities, setFacilities] = useState([]);
 
   // Menu
   const [anchorEl, setAnchorEl] = useState(null);
@@ -39,59 +52,14 @@ export default function Rooms() {
   // Delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  // Menu handlers
-  const handleMenuClick = (event, room) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRoom(room);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null); // ❗ ما نمسحش selectedRoom هنا
-  };
-
-  const handleView = () => {
-    console.log("View:", selectedRoom);
-    handleMenuClose();
-  };
-
-  const handleEdit = () => {
-    console.log("Edit:", selectedRoom);
-    handleMenuClose();
-  };
-
-  const handleDelete = () => {
-    setDeleteDialogOpen(true);
-    handleMenuClose();
-  };
-
-  // Confirm delete
-  const confirmDelete = async () => {
-    if (!selectedRoom?._id) return;
-
-    try {
-      await deleteRoom(selectedRoom._id);
-
-      setRooms((prev) =>
-        prev.filter((room) => room._id !== selectedRoom._id)
-      );
-
-      setDeleteDialogOpen(false);
-      setSelectedRoom(null);
-    } catch (error) {
-      console.error("Failed to delete room:", error);
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteDialogOpen(false);
-    setSelectedRoom(null);
-  };
-
-  // Fetch rooms
+  // Fetch facilities + rooms
   useEffect(() => {
-    const getRooms = async () => {
+    const loadData = async () => {
       setLoading(true);
       try {
+        const facs = await fetchFacilities();
+        setFacilities(facs || []);
+
         const data = await fetchRooms(1, 20);
         setRooms(data.rooms || []);
       } catch (error) {
@@ -100,51 +68,121 @@ export default function Rooms() {
         setLoading(false);
       }
     };
-    getRooms();
-  }, [fetchRooms]);
+    loadData();
+  }, [fetchRooms, fetchFacilities]);
 
-  // Search filter
-  const filteredRooms = search
-    ? rooms.filter((room) =>
-        room.roomNumber
-          .toLowerCase()
-          .includes(search.toLowerCase().trim())
-      )
-    : rooms;
+  // Menu handlers
+  const handleMenuClick = (event, room) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRoom(room);
+  };
+  const handleMenuClose = () => setAnchorEl(null);
+  const handleView = () => {
+    console.log("View:", selectedRoom);
+    handleMenuClose();
+  };
+  const handleEdit = (room) => {
+    if (room?._id) navigate(`/dashboard/rooms-data/${room._id}`);
+    handleMenuClose();
+  };
+  const handleDelete = () => {
+    setDeleteDialogOpen(true);
+    handleMenuClose();
+  };
+
+  // Confirm delete
+  const confirmDelete = async () => {
+    if (!selectedRoom?._id) return;
+    try {
+      await deleteRoom(selectedRoom._id);
+      setRooms((prev) => prev.filter((r) => r._id !== selectedRoom._id));
+      setDeleteDialogOpen(false);
+      setSelectedRoom(null);
+    } catch (err) {
+      console.error("Failed to delete room:", err);
+    }
+  };
+  const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setSelectedRoom(null);
+  };
+
+  // Filter rooms
+  const filteredRooms = rooms.filter((room) => {
+    const matchesSearch = room.roomNumber
+      .toLowerCase()
+      .includes(search.toLowerCase().trim());
+    const matchesFacility =
+      !selectedFacility ||
+      room.facilities?.some((f) => f._id === selectedFacility);
+    return matchesSearch && matchesFacility;
+  });
 
   return (
     <Box p={2}>
       {/* Header */}
-      <Grid container justifyContent="space-between" mb={2}>
+      <Grid container justifyContent="space-between" mb={2} alignItems="center">
         <Grid item>
           <Typography variant="h6">Rooms Table Details</Typography>
-          <Typography color="text.secondary">
-            You can check all details
-          </Typography>
+          <Typography color="text.secondary">You can check all details</Typography>
         </Grid>
         <Grid item>
-          <Button variant="contained" sx={{ backgroundColor: "#203FC7" }}>
+          <Button
+            variant="contained"
+            component={Link}
+            to="/dashboard/rooms-data"
+            sx={{ backgroundColor: "#203FC7",px: 3, py: 1.5 }}
+          >
             Add New Room
           </Button>
         </Grid>
       </Grid>
 
-      {/* Search */}
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <TextField
-          fullWidth
-          placeholder="Search by room number..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Paper>
+      {/* Search + Filters */}
+      <Grid container spacing={2} mb={3} alignItems="center">
+        <Grid size={8}>
+    
+        <Grid item  md={12}>
+    <TextField
+      fullWidth
+      size="small"
+      placeholder="Search by number ..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  </Grid>
+   
+  </Grid>
+  <Grid size={4}>
+   
+        <Grid item  >
+    <TextField
+      select
+      fullWidth
+      size="small"
+      label="Facility"
+      value={selectedFacility}
+      onChange={(e) => setSelectedFacility(e.target.value)}
+    >
+      <MenuItem value="">All Facilities</MenuItem>
+      {facilities.map((f) => (
+        <MenuItem key={f._id} value={f._id}>
+          {f.name}
+        </MenuItem>
+      ))}
+    </TextField>
+  </Grid>
+  
+  </Grid>
+        </Grid>
+
 
       {/* Table */}
       {loading ? (
@@ -154,7 +192,7 @@ export default function Rooms() {
       ) : (
         <TableContainer component={Paper}>
           <Table>
-            <TableHead>
+            <TableHead sx={{ bgcolor: "#E2E5EB" }}>
               <TableRow>
                 <TableCell>Room Number</TableCell>
                 <TableCell align="right">Image</TableCell>
@@ -212,15 +250,14 @@ export default function Rooms() {
             </TableBody>
           </Table>
 
-          <Menu
-            anchorEl={anchorEl}
-            open={openMenu}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleView}>View</MenuItem>
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
-            <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
-              Delete
+          {/* Menu */}
+          <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+            <MenuItem onClick={handleView}><RemoveRedEyeOutlinedIcon sx={{ mr: 1 , color:'#203FC7'}} /> View</MenuItem>
+            <MenuItem onClick={() => handleEdit(selectedRoom)}>
+            <EditCalendarOutlinedIcon sx={{ mr: 1 , color:'#203FC7'}} /> Edit</MenuItem>
+            <MenuItem onClick={handleDelete} >
+           <DeleteOutlineOutlinedIcon sx={{ mr: 1 , color:'#203FC7'}} /> 
+             Delete
             </MenuItem>
           </Menu>
         </TableContainer>

@@ -21,8 +21,9 @@ import DashboardLayout from "./Shared/DashboardLayout/DashboardLayout";
 import BookingList from "./DashboardModule/Components/BookingList/BookingList";
 import AdminProtectedRoute from "./Shared/AdminProtectedRoute/AdminProtectedRoute";
 import { AuthContextProvider } from "./Context/AuthContext";
-import UsersList from "./DashboardModule/Components/UsersList/UsersList";
-import Rooms from "./DashboardModule/Components/Rooms/Rooms";
+import UsersList from "./UsersModule/Components/Users/UsersList/UsersList";
+import Rooms from "./RoomsModule/Components/Rooms/Rooms";
+import RoomsData from "./RoomsModule/RoomsData/RoomsData";
 
 function App() {
   let routes = createBrowserRouter([
@@ -57,6 +58,11 @@ function App() {
         },
         {path: "users", element: <UsersList />},  
         {path: "rooms", element: <Rooms />},  
+        {path: "rooms-data", element: <RoomsData />},
+        {
+  path: "rooms-data/:roomId",
+  element: <RoomsData />, 
+},
       ],
     },
   ]);

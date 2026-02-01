@@ -15,7 +15,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import useUsers from "../../../Hooks/useUsers";
+import useUsers from "../../../../Hooks/useUsers";
 
 export default function UsersList() {
   const [page, setPage] = useState(0);
