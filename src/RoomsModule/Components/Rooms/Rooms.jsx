@@ -220,7 +220,7 @@ export default function Rooms() {
                       <img
                         src={room.images?.[0] || "/placeholder.png"}
                         alt=""
-                        width={50}
+                        width={50} 
                         height={50}
                         style={{ borderRadius: 4 }}
                       />
