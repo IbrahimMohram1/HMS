@@ -28,6 +28,7 @@ import DeleteConfirmation from "../../../Shared/delete confirmation/delete confi
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';import EditSquareIcon from '@mui/icons-material/EditSquare';
 import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
+import { toast } from "react-toastify";
 
 export default function Rooms() {
   const { fetchRooms, deleteRoom, fetchFacilities } = useRooms();
@@ -92,16 +93,22 @@ export default function Rooms() {
 
   // Confirm delete
   const confirmDelete = async () => {
-    if (!selectedRoom?._id) return;
-    try {
-      await deleteRoom(selectedRoom._id);
-      setRooms((prev) => prev.filter((r) => r._id !== selectedRoom._id));
-      setDeleteDialogOpen(false);
-      setSelectedRoom(null);
-    } catch (err) {
-      console.error("Failed to delete room:", err);
-    }
-  };
+  if (!selectedRoom?._id) return;
+
+  try {
+    await deleteRoom(selectedRoom._id);
+
+    setRooms((prev) => prev.filter((r) => r._id !== selectedRoom._id));
+    setDeleteDialogOpen(false);
+    setSelectedRoom(null);
+
+    toast.success("Room deleted successfully ✅");
+  } catch (err) {
+    console.error("Failed to delete room:", err);
+    toast.error("Failed to delete room ❌");
+  }
+};
+
   const cancelDelete = () => {
     setDeleteDialogOpen(false);
     setSelectedRoom(null);
