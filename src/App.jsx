@@ -6,7 +6,6 @@ import AuthLayout from "./Shared/AuthLayout/AuthLayout";
 import NotFound from "./Shared/NotFound/NotFound";
 import {
   createBrowserRouter,
-  createHashRouter,
   RouterProvider,
 } from "react-router-dom";
 import Login from "./AuthModule/Components/Login/Login";
@@ -24,6 +23,8 @@ import { AuthContextProvider } from "./Context/AuthContext";
 import UsersList from "./UsersModule/Components/Users/UsersList/UsersList";
 import Rooms from "./RoomsModule/Components/Rooms/Rooms";
 import RoomsData from "./RoomsModule/RoomsData/RoomsData";
+import FacilityList from "./FacilityModule/Components/FacilityList/FacilityList";
+import AdsList from "./ADSModule/Components/ADSList/ADSList";
 
 function App() {
   let routes = createBrowserRouter([
@@ -63,6 +64,14 @@ function App() {
   path: "rooms-data/:roomId",
   element: <RoomsData />, 
 },
+        {
+          path: "facility",
+          element: <FacilityList />,
+        },
+        {
+          path: "ads",
+          element: <AdsList />,
+        },
       ],
     },
   ]);

@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-import useAuth from "../../../Hooks/useAuth";
 import { Box, Grid, Typography } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import { PieChart } from "@mui/x-charts/PieChart";
+import useRooms from "../../../Hooks/useRooms";
+import useFacilities from "../../../Hooks/useFacilities";
+import useAds from "../../../Hooks/useAds";
 export default function Dashboard() {
-  let { logout } = useAuth();
+  
+const { fetchRooms } = useRooms();
+const { totalCount: totalFacilities } = useFacilities();
+const { total } = useAds();
+  const [totalRooms, setTotalRooms] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const loadRoomsCount = async () => {
+      try {
+        const data = await fetchRooms(1, 1); // نجيب العدد بس
+        setTotalRooms(data.totalCount);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoomsCount();
+  }, [fetchRooms]);
 
   return (
     <>
@@ -16,6 +39,7 @@ export default function Dashboard() {
           spacing={3}
           sx={{ width: "100%", justifyContent: "center" }}
         >
+
           <Grid
             sx={{
               backgroundColor: "#1A1B1E",
@@ -35,7 +59,7 @@ export default function Dashboard() {
               }}
             >
               <Typography size={6} variant="h5" component="div">
-                100
+                {totalRooms}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Rooms
                 </Typography>
@@ -64,9 +88,9 @@ export default function Dashboard() {
               }}
             >
               <Typography size={6} variant="h5" component="div">
-                100
+                {totalFacilities}
                 <Typography sx={{ mt: 1 }} variant="body2">
-                  Rooms
+                  Facilities
                 </Typography>
               </Typography>
               <Typography size={6} variant="body2">
@@ -93,9 +117,9 @@ export default function Dashboard() {
               }}
             >
               <Typography size={6} variant="h5" component="div">
-                100
+                 {total}
                 <Typography sx={{ mt: 1 }} variant="body2">
-                  Rooms
+                  Ads
                 </Typography>
               </Typography>
               <Typography size={6} variant="body2">

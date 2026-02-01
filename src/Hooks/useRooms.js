@@ -15,7 +15,11 @@ export default function useRooms() {
       `/api/v0/admin/rooms?page=${page}&size=${size}`,
       { headers: getHeaders() }
     );
-    return res.data.data;
+
+    return {
+      rooms: res.data.data.rooms,
+      totalCount: res.data.data.totalCount,
+    };
   }, []);
 
   const getRoomById = useCallback(async (id) => {
