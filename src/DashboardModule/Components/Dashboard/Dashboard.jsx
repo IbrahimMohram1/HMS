@@ -8,13 +8,11 @@ import useRooms from "../../../Hooks/useRooms";
 import useFacilities from "../../../Hooks/useFacilities";
 import useAds from "../../../Hooks/useAds";
 export default function Dashboard() {
-  
-const { fetchRooms } = useRooms();
-const { totalCount: totalFacilities } = useFacilities();
-const { total } = useAds();
+  const { fetchRooms } = useRooms();
+  const { totalCount: totalFacilities } = useFacilities();
+  const { total } = useAds();
   const [totalRooms, setTotalRooms] = useState(0);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const loadRoomsCount = async () => {
@@ -39,7 +37,6 @@ const { total } = useAds();
           spacing={3}
           sx={{ width: "100%", justifyContent: "center" }}
         >
-
           <Grid
             sx={{
               backgroundColor: "#1A1B1E",
@@ -117,7 +114,7 @@ const { total } = useAds();
               }}
             >
               <Typography size={6} variant="h5" component="div">
-                 {total}
+                {total}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Ads
                 </Typography>

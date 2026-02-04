@@ -4,10 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import AuthLayout from "./Shared/AuthLayout/AuthLayout";
 import NotFound from "./Shared/NotFound/NotFound";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./AuthModule/Components/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +22,7 @@ import Rooms from "./RoomsModule/Components/Rooms/Rooms";
 import RoomsData from "./RoomsModule/RoomsData/RoomsData";
 import FacilityList from "./FacilityModule/Components/FacilityList/FacilityList";
 import AdsList from "./ADSModule/Components/ADSList/ADSList";
+import UserLayout from "./Shared/UserLayout/UserLayout";
 
 function App() {
   let routes = createBrowserRouter([
@@ -57,13 +55,13 @@ function App() {
           path: "booking",
           element: <BookingList />,
         },
-        {path: "users", element: <UsersList />},  
-        {path: "rooms", element: <Rooms />},  
-        {path: "rooms-data", element: <RoomsData />},
+        { path: "users", element: <UsersList /> },
+        { path: "rooms", element: <Rooms /> },
+        { path: "rooms-data", element: <RoomsData /> },
         {
-  path: "rooms-data/:roomId",
-  element: <RoomsData />, 
-},
+          path: "rooms-data/:roomId",
+          element: <RoomsData />,
+        },
         {
           path: "facility",
           element: <FacilityList />,
@@ -73,6 +71,11 @@ function App() {
           element: <AdsList />,
         },
       ],
+    },
+    {
+      path: "/home",
+      element: <UserLayout />,
+      children: [],
     },
   ]);
 
