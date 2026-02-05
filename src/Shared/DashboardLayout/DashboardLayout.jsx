@@ -9,6 +9,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import SideBar from "../SideBar/SideBar";
+import AdminNavbar from "../AdminNavbar/AdminNavbar";
 
 export default function DashboardLayout() {
   return (
@@ -20,10 +21,10 @@ export default function DashboardLayout() {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           overflow: "hidden",
         }}
       >
+        <AdminNavbar />
         <Outlet />
       </Box>
     </Box>

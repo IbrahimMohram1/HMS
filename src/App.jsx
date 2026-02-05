@@ -25,6 +25,8 @@ import Rooms from "./RoomsModule/Components/Rooms/Rooms";
 import RoomsData from "./RoomsModule/RoomsData/RoomsData";
 import FacilityList from "./FacilityModule/Components/FacilityList/FacilityList";
 import AdsList from "./ADSModule/Components/ADSList/ADSList";
+import LandingPage from "./LandingModule/LandingPage";
+import AllRooms from "./LandingModule/AllRooms/AllRooms";
 
 function App() {
   let routes = createBrowserRouter([
@@ -71,6 +73,14 @@ function App() {
         {
           path: "ads",
           element: <AdsList />,
+        },
+        {
+          path: "Landing",
+          element: <LandingPage />,
+        },
+        {
+          path: "All-rooms",
+          element: <AllRooms />,
         },
       ],
     },
