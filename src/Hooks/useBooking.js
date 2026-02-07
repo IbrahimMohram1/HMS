@@ -13,12 +13,12 @@ export const useBookingApi = () => {
         `/api/v0/admin/booking?page=1&size=10`,
       );
       setData(data.data);
-  setTotalCount(data.data.totalCount);
+      setTotalCount(data.data.totalCount);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching bookings:", error.message);
     }
   };
-  return { loading, data, getBookings,totalCount };
+  return { loading, data, getBookings, totalCount };
 };

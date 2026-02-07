@@ -10,14 +10,10 @@ import useUsers from "../../../Hooks/useUsers";
 import { useBookingApi } from "../../../Hooks/useBooking";
 
 export default function Dashboard() {
+  // ================= Hooks =================
   const { fetchRooms } = useRooms();
   const { totalCount: totalFacilities } = useFacilities();
   const { total } = useAds();
-  const [totalRooms, setTotalRooms] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  // ================= Hooks =================
-
   const { users = [], loading: usersLoading } = useUsers(0, 1000);
 
   const {
@@ -27,6 +23,8 @@ export default function Dashboard() {
   } = useBookingApi();
 
   // ================= State =================
+  const [totalRooms, setTotalRooms] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   // ================= Rooms Count =================
   useEffect(() => {
@@ -42,12 +40,12 @@ export default function Dashboard() {
     };
 
     loadRoomsCount();
-  }, [fetchRooms]);
+  }, []);
 
   // ================= Bookings =================
   useEffect(() => {
     getBookings(1, 1000);
-  }, [getBookings]);
+  }, []);
 
   // if (loading || usersLoading || bookingsLoading) {
   //   return <Typography>Loading...</Typography>;
