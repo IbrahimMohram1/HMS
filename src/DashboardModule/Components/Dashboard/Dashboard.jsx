@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import { Box, Grid, Typography } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import { PieChart } from "@mui/x-charts/PieChart";
+
 import useRooms from "../../../Hooks/useRooms";
 import useFacilities from "../../../Hooks/useFacilities";
 import useAds from "../../../Hooks/useAds";
+import useUsers from "../../../Hooks/useUsers";
+import { useBookingApi } from "../../../Hooks/useBooking";
+
 export default function Dashboard() {
   const { fetchRooms } = useRooms();
   const { totalCount: totalFacilities } = useFacilities();
@@ -14,11 +16,24 @@ export default function Dashboard() {
   const [totalRooms, setTotalRooms] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // ================= Hooks =================
+
+  const { users = [], loading: usersLoading } = useUsers(0, 1000);
+
+  const {
+    bookings = [],
+    getBookings,
+    loading: bookingsLoading,
+  } = useBookingApi();
+
+  // ================= State =================
+
+  // ================= Rooms Count =================
   useEffect(() => {
     const loadRoomsCount = async () => {
       try {
-        const data = await fetchRooms(1, 1); // نجيب العدد بس
-        setTotalRooms(data.totalCount);
+        const data = await fetchRooms(1, 1);
+        setTotalRooms(data?.totalCount || 0);
       } catch (error) {
         console.error(error);
       } finally {
@@ -29,122 +44,131 @@ export default function Dashboard() {
     loadRoomsCount();
   }, [fetchRooms]);
 
+  // ================= Bookings =================
+  useEffect(() => {
+    getBookings(1, 1000);
+  }, [getBookings]);
+
+  // if (loading || usersLoading || bookingsLoading) {
+  //   return <Typography>Loading...</Typography>;
+  // }
+
+  // ================= SAFE DATA =================
+  const safeUsers = Array.isArray(users) ? users : [];
+  const safeBookings = Array.isArray(bookings) ? bookings : [];
+
+  // ================= Charts Data =================
+
+  // Users vs Admin
+  const adminCount = safeUsers.filter((u) => u.role === "admin").length;
+  const userCount = safeUsers.filter((u) => u.role === "user").length;
+
+  // Bookings
+  const pendingBookings = safeBookings.filter(
+    (b) => b.status === "pending",
+  ).length;
+
+  const completedBookings = safeBookings.filter(
+    (b) => b.status === "completed",
+  ).length;
+
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      {/* ================= CARDS ================= */}
+      <Box sx={{ flexGrow: 1, mt: 3 }}>
         <Grid
           container
           spacing={3}
           sx={{ width: "100%", justifyContent: "center" }}
         >
           <Grid
-            sx={{
-              backgroundColor: "#1A1B1E",
-              color: "#fff",
-            }}
+            sx={{ backgroundColor: "#1A1B1E", color: "#fff" }}
             item
             size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
-            <Box
-              spacing={2}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography size={6} variant="h5" component="div">
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h5">
                 {totalRooms}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Rooms
                 </Typography>
               </Typography>
-              <Typography size={6} variant="body2">
-                <WorkIcon />
-              </Typography>
+              <WorkIcon />
             </Box>
           </Grid>
+
           <Grid
-            sx={{
-              backgroundColor: "#1A1B1E",
-              color: "#fff",
-            }}
+            sx={{ backgroundColor: "#1A1B1E", color: "#fff" }}
             item
             size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
-            <Box
-              spacing={2}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography size={6} variant="h5" component="div">
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h5">
                 {totalFacilities}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Facilities
                 </Typography>
               </Typography>
-              <Typography size={6} variant="body2">
-                <WorkIcon />
-              </Typography>
+              <WorkIcon />
             </Box>
           </Grid>
+
           <Grid
-            sx={{
-              backgroundColor: "#1A1B1E",
-              color: "#fff",
-            }}
+            sx={{ backgroundColor: "#1A1B1E", color: "#fff" }}
             item
             size={{ xs: 12, md: 4 }}
             p={3}
             borderRadius={2}
           >
-            <Box
-              spacing={2}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography size={6} variant="h5" component="div">
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h5">
                 {total}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Ads
                 </Typography>
               </Typography>
-              <Typography size={6} variant="body2">
-                <WorkIcon />
-              </Typography>
+              <WorkIcon />
             </Box>
           </Grid>
         </Grid>
       </Box>
+
+      {/* ================= PIE CHARTS ================= */}
       <Box sx={{ mt: 25 }}>
         <Grid
           container
           spacing={2}
           sx={{ display: "flex", justifyContent: "space-between", mt: 5 }}
         >
+          {/* ===== LEFT: BOOKINGS ===== */}
           <PieChart
-            size={{ xs: 12, md: 6 }}
             series={[
               {
                 data: [
-                  { id: 0, value: 10, label: "series A" },
-                  { id: 1, value: 15, label: "series B" },
+                  {
+                    id: 0,
+                    value: pendingBookings,
+                    label: "Pending",
+                    color: "#FFA500",
+                  },
+                  {
+                    id: 1,
+                    value: completedBookings,
+                    label: "Completed",
+                    color: "#4CAF50",
+                  },
                 ],
               },
             ]}
             width={200}
             height={200}
           />
+
+          {/* ===== RIGHT: USERS vs ADMIN ===== */}
           <PieChart
             slotProps={{
               legend: {
@@ -155,10 +179,7 @@ export default function Dashboard() {
                   justifyContent: "space-between",
                 },
                 direction: "horizontal",
-                position: {
-                  vertical: "bottom",
-                  horizontal: "center",
-                },
+                position: { vertical: "bottom", horizontal: "center" },
               },
             }}
             size={{ xs: 12, md: 6 }}
@@ -166,8 +187,13 @@ export default function Dashboard() {
             series={[
               {
                 data: [
-                  { id: 0, value: 25, label: "User", color: "#54D14D" },
-                  { id: 1, value: 10, label: "Admin", color: "#35C2FD" },
+                  { id: 0, value: userCount, label: "Users", color: "#54D14D" },
+                  {
+                    id: 1,
+                    value: adminCount,
+                    label: "Admins",
+                    color: "#35C2FD",
+                  },
                 ],
               },
             ]}

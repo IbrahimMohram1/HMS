@@ -43,6 +43,11 @@ export const dashboardDrawerRoutes = [
     path: "/dashboard/ads",
     icon: CalendarMonthIcon,
   },
+  {
+    label: "Landing",
+    path: "/dashboard/Landing",
+    icon: CalendarMonthIcon,
+  },
 
   {
     label: "LogOut",
