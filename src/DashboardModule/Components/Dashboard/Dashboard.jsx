@@ -1,3 +1,4 @@
+// src/Pages/Dashboard/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
@@ -8,23 +9,20 @@ import useFacilities from "../../../Hooks/useFacilities";
 import useAds from "../../../Hooks/useAds";
 import useUsers from "../../../Hooks/useUsers";
 import { useBookingApi } from "../../../Hooks/useBooking";
+import useDashboard from "../../../Hooks/useDashboard";
 
 export default function Dashboard() {
   // ================= Hooks =================
   const { fetchRooms } = useRooms();
   const { totalCount: totalFacilities } = useFacilities();
-  const { total } = useAds();
+  const { total: totalAds } = useAds();
   const { users = [], loading: usersLoading } = useUsers(0, 1000);
-
-  const {
-    bookings = [],
-    getBookings,
-    loading: bookingsLoading,
-  } = useBookingApi();
+  const { bookings = [], getBookings, loading: bookingsLoading } = useBookingApi();
+  const { data: dashboardData, loading: dashboardLoading, error: dashboardError } = useDashboard();
 
   // ================= State =================
   const [totalRooms, setTotalRooms] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [roomsLoading, setRoomsLoading] = useState(true);
 
   // ================= Rooms Count =================
   useEffect(() => {
@@ -35,10 +33,9 @@ export default function Dashboard() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        setRoomsLoading(false);
       }
     };
-
     loadRoomsCount();
   }, []);
 
@@ -47,34 +44,21 @@ export default function Dashboard() {
     getBookings(1, 1000);
   }, []);
 
-  // if (loading || usersLoading || bookingsLoading) {
-  //   return <Typography>Loading...</Typography>;
-  // }
-
-  // ================= SAFE DATA =================
-  const safeUsers = Array.isArray(users) ? users : [];
-  const safeBookings = Array.isArray(bookings) ? bookings : [];
+  // ================= Loading / Error =================
+  if (roomsLoading || bookingsLoading || dashboardLoading) return <p>Loading dashboard...</p>;
+  if (dashboardError) return <p>Error: {dashboardError}</p>;
 
   // ================= Charts Data =================
+  const pendingBookings = dashboardData?.bookings?.pending ?? 0;
+  const completedBookings = dashboardData?.bookings?.completed ?? 0;
+  const userCount = dashboardData?.users?.user ?? 0;
+  const adminCount = dashboardData?.users?.admin ?? 0;
 
-  // Users vs Admin
-  const adminCount = safeUsers.filter((u) => u.role === "admin").length;
-  const userCount = safeUsers.filter((u) => u.role === "user").length;
-
-  // Bookings
-  const pendingBookings = safeBookings.filter(
-    (b) => b.status === "pending",
-  ).length;
-
-  const completedBookings = safeBookings.filter(
-    (b) => b.status === "completed",
-  ).length;
-
+  // ================= RENDER =================
   return (
-    <>
+    <Box sx={{ flexGrow: 1, mt: 3 }}>
       {/* ================= CARDS ================= */}
-      <Box sx={{ flexGrow: 1, mt: 3 }}>
-        <Grid
+     <Grid
           container
           spacing={3}
           sx={{ width: "100%", justifyContent: "center" }}
@@ -97,7 +81,8 @@ export default function Dashboard() {
             </Box>
           </Grid>
 
-          <Grid
+        {/* Facilities Card */}
+         <Grid
             sx={{ backgroundColor: "#1A1B1E", color: "#fff" }}
             item
             size={{ xs: 12, md: 4 }}
@@ -115,7 +100,9 @@ export default function Dashboard() {
             </Box>
           </Grid>
 
-          <Grid
+
+        {/* Ads Card */}
+        <Grid
             sx={{ backgroundColor: "#1A1B1E", color: "#fff" }}
             item
             size={{ xs: 12, md: 4 }}
@@ -124,7 +111,7 @@ export default function Dashboard() {
           >
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="h5">
-                {total}
+                {totalAds}
                 <Typography sx={{ mt: 1 }} variant="body2">
                   Ads
                 </Typography>
@@ -132,74 +119,57 @@ export default function Dashboard() {
               <WorkIcon />
             </Box>
           </Grid>
-        </Grid>
-      </Box>
+      </Grid>
 
       {/* ================= PIE CHARTS ================= */}
-      <Box sx={{ mt: 25 }}>
-        <Grid
-          container
-          spacing={2}
-          sx={{ display: "flex", justifyContent: "space-between", mt: 5 }}
-        >
-          {/* ===== LEFT: BOOKINGS ===== */}
+      <Grid container spacing={3} justifyContent="center" sx={{ mt: 5 }}>
+        {/* Bookings PieChart */}
+        <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center">
+         
           <PieChart
             series={[
               {
                 data: [
-                  {
-                    id: 0,
-                    value: pendingBookings,
-                    label: "Pending",
-                    color: "#FFA500",
-                  },
-                  {
-                    id: 1,
-                    value: completedBookings,
-                    label: "Completed",
-                    color: "#4CAF50",
-                  },
+                  { id: 0, value: pendingBookings, label: "Pending", color: "#FFA500" },
+                  { id: 1, value: completedBookings, label: "Completed", color: "#4CAF50" },
                 ],
               },
             ]}
-            width={200}
-            height={200}
+            width={250}
+            height={250}
           />
+        </Grid>
 
-          {/* ===== RIGHT: USERS vs ADMIN ===== */}
+        {/* Users vs Admins PieChart */}
+        <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center">
+          
           <PieChart
+            series={[
+              {
+                data: [
+                  { id: 0, value: userCount, label: "Users", color: "#4dbdd1" },
+                  { id: 1, value: adminCount, label: "Admins", color: "#16207e" },
+                ],
+              },
+            ]}
+            width={250}
+            height={250}
             slotProps={{
               legend: {
                 sx: {
                   display: "flex",
-                  width: "100%",
                   flexDirection: "column",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mt: 2,
                 },
                 direction: "horizontal",
                 position: { vertical: "bottom", horizontal: "center" },
               },
             }}
-            size={{ xs: 12, md: 6 }}
-            sx={{ width: "100%" }}
-            series={[
-              {
-                data: [
-                  { id: 0, value: userCount, label: "Users", color: "#54D14D" },
-                  {
-                    id: 1,
-                    value: adminCount,
-                    label: "Admins",
-                    color: "#35C2FD",
-                  },
-                ],
-              },
-            ]}
-            width={200}
-            height={200}
           />
         </Grid>
-      </Box>
-    </>
+      </Grid>
+    </Box>
   );
 }
