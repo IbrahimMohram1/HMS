@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 import { Outlet } from "react-router-dom";
+import Navbar from "../Navbar/Navbar.tsx";
 
 export default function UserLayout() {
   return (
@@ -13,6 +14,7 @@ export default function UserLayout() {
           overflow: "hidden",
         }}
       >
+        <Navbar />
         <Outlet />
       </Box>
     </>
