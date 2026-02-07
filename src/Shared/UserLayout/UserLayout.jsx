@@ -13,7 +13,6 @@ export default function UserLayout() {
           overflow: "hidden",
         }}
       >
-        <h3>Heeeeeeeeeeelo From User Part</h3>
         <Outlet />
       </Box>
     </>

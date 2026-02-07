@@ -53,7 +53,7 @@ export default function useAuth() {
       if (decoded.role === "admin") {
         navigate("/dashboard");
       } else {
-        navigate("/home"); // Adjust this path as needed for regular users
+        navigate("/"); // Adjust this path as needed for regular users
       }
 
       return decoded;

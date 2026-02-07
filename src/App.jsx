@@ -29,7 +29,7 @@ import AllRooms from "./LandingModule/AllRooms/AllRooms";
 function App() {
   let routes = createBrowserRouter([
     {
-      path: "",
+      path: "auth",
       element: <AuthLayout />,
       errorElement: <NotFound />,
       children: [
@@ -72,20 +72,18 @@ function App() {
           path: "ads",
           element: <AdsList />,
         },
-        {
-          path: "Landing",
-          element: <LandingPage />,
-        },
+      ],
+    },
+    {
+      path: "",
+      element: <UserLayout />,
+      children: [
+        { index: true, element: <LandingPage /> },
         {
           path: "All-rooms",
           element: <AllRooms />,
         },
       ],
-    },
-    {
-      path: "/home",
-      element: <UserLayout />,
-      children: [],
     },
   ]);
 
