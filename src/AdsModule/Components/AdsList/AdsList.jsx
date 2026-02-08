@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -33,12 +33,13 @@ import axiosClient from "../../../Api/AxiosClient";
 export default function AdsList() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAdsDialogOpen, setIsAdsDialogOpen] = useState(false);
+  const [mode, setMode] = useState("add"); // "add" or "update"
   const [selectedAds, setSelectedAds] = useState(null);
   const [rooms, setRooms] = useState([]);
   const open = Boolean(anchorEl);
 
-  const { data, deleteAds, addAds } = useAds();
+  const { data, deleteAds, addAds, updateAds } = useAds();
 
   const {
     register,
@@ -50,7 +51,7 @@ export default function AdsList() {
     defaultValues: {
       room: "",
       discount: "",
-      isActive: "active_placeholder",
+      isActive: true,
     },
   });
 
@@ -74,7 +75,7 @@ export default function AdsList() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getRooms();
   }, []);
 
@@ -94,27 +95,53 @@ export default function AdsList() {
     }
   };
 
-  //========================Add Dialog===================================
-  const handleOpenAddDialog = () => {
-    reset({
-      room: "",
-      discount: "",
-      isActive: "active_placeholder",
-    });
-    setIsAddDialogOpen(true);
+  //========================Ads Dialog (Add/Update)===================================
+  const handleOpenAdsDialog = (mode, selectedAds = null) => {
+    console.log("Opening Ads Dialog:", mode, selectedAds);
+    setMode(mode);
+    if (mode === "update" && selectedAds) {
+      reset({
+        room: selectedAds.room?._id,
+        discount: selectedAds.discount ?? selectedAds.room?.discount,
+        isActive: selectedAds.isActive,
+      });
+    } else {
+      reset({
+        room: "",
+        discount: "",
+        isActive: true,
+      });
+    }
+    setIsAdsDialogOpen(true);
+    handleCloseMenu();
   };
-  const handleCloseAddDialog = () => {
-    setIsAddDialogOpen(false);
+
+  const handleCloseAdsDialog = () => {
+    setIsAdsDialogOpen(false);
     reset();
+    setSelectedAds(null);
   };
-  const onSubmitAdd = async (data) => {
-    // Convert placeholder to true
-    const finalData = {
-      ...data,
-      isActive: data.isActive === "active_placeholder" ? true : data.isActive,
-    };
-    await addAds(finalData);
-    handleCloseAddDialog();
+
+  const onSubmitAds = async (data) => {
+    console.log("Submitting Ads Form:", mode, data);
+
+    try {
+      if (mode === "add") {
+        await addAds(data);
+      } else {
+        const updateData = {
+          discount: data.discount,
+          isActive: data.isActive,
+        };
+        await updateAds(selectedAds._id, updateData);
+      }
+      handleCloseAdsDialog();
+    } catch (err) {
+      console.error(
+        "Form Submission Error Details:",
+        JSON.stringify(err.response?.data || err),
+      );
+    }
   };
 
   return (
@@ -141,7 +168,7 @@ export default function AdsList() {
         </Box>
         <Button
           variant="contained"
-          onClick={handleOpenAddDialog}
+          onClick={() => handleOpenAdsDialog("add")}
           sx={{
             backgroundColor: "#203FC7",
             borderRadius: "8px",
@@ -277,7 +304,7 @@ export default function AdsList() {
             View
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={() => handleOpenAdsDialog("update", selectedAds)}>
           <EditOutlinedIcon sx={{ color: "#203FC7", fontSize: 20 }} />
           <Typography variant="body2" sx={{ color: "#1F263E" }}>
             Edit
@@ -365,10 +392,10 @@ export default function AdsList() {
         </DialogContent>
       </Dialog>
 
-      {/*================= Add Ads Modal ==================*/}
+      {/*================= Ads Modal (Add / Update) ==================*/}
       <Dialog
-        open={isAddDialogOpen}
-        onClose={handleCloseAddDialog}
+        open={isAdsDialogOpen}
+        onClose={handleCloseAdsDialog}
         maxWidth="sm"
         fullWidth
         PaperProps={{
@@ -386,9 +413,9 @@ export default function AdsList() {
           }}
         >
           <Typography variant="h5" sx={{ fontWeight: "700", color: "#333" }}>
-            Ads
+            {mode === "add" ? "Add Ads" : "Update Ads"}
           </Typography>
-          <IconButton onClick={handleCloseAddDialog} size="small">
+          <IconButton onClick={handleCloseAdsDialog} size="small">
             <CloseIcon
               sx={{
                 color: "red",
@@ -404,7 +431,7 @@ export default function AdsList() {
         <DialogContent sx={{ mt: 0 }}>
           <Box
             component="form"
-            onSubmit={handleSubmit(onSubmitAdd)}
+            onSubmit={handleSubmit(onSubmitAds)}
             noValidate
             sx={{ display: "flex", flexDirection: "column", gap: 3 }}
           >
@@ -529,7 +556,7 @@ export default function AdsList() {
                   },
                 }}
               >
-                Save
+                {mode === "add" ? "Save" : "Update"}
               </Button>
             </Box>
           </Box>

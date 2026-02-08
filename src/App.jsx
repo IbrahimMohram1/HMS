@@ -25,6 +25,7 @@ import AdsList from "./ADSModule/Components/ADSList/ADSList";
 import UserLayout from "./Shared/UserLayout/UserLayout";
 import LandingPage from "./LandingModule/LandingPage";
 import AllRooms from "./LandingModule/AllRooms/AllRooms";
+import Favorites from "./LandingModule/Favorites/Favorites";
 
 function App() {
   let routes = createBrowserRouter([
@@ -82,6 +83,10 @@ function App() {
         {
           path: "All-rooms",
           element: <AllRooms />,
+        },
+        {
+          path: "favorites",
+          element: <Favorites />,
         },
       ],
     },

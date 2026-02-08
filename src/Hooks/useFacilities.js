@@ -52,6 +52,20 @@ export default function useFacilities() {
     }
   };
 
+  const updateFacility = async (id, facilityData) => {
+    try {
+      const response = await axiosClient.put(
+        `/api/v0/admin/room-facilities/${id}`,
+        facilityData
+      );
+      toast.success(response.data.message);
+      getFacilities();
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Error updating facility");
+    }
+  };
+
   useEffect(() => {
     getFacilities();
   }, [getFacilities]);
@@ -63,5 +77,6 @@ export default function useFacilities() {
     getFacilities,
     deleteFacility,
     addFacility,
+    updateFacility,
   };
 }

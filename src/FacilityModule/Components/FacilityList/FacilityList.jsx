@@ -27,13 +27,15 @@ import deleteImg from "../../../assets/images/Delete.png";
 import { useForm } from "react-hook-form";
 
 export default function FacilityList() {
-  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isFacilityDialogOpen, setIsFacilityDialogOpen] = useState(false);
+  const [mode, setMode] = useState("add"); // "add" or "update"
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  let { data, deleteFacility, loading, addFacility } = useFacilities();
+  let { data, deleteFacility, loading, addFacility, updateFacility } =
+    useFacilities();
 
   const {
     register,
@@ -67,18 +69,31 @@ export default function FacilityList() {
     }
   };
 
-  //========================Add Dialog===================================
-  const handleOpenAddDialog = () => {
-    reset();
-    setIsAddDialogOpen(true);
+  //========================Facility Dialog (Add / Update)===================================
+  const handleOpenFacilityDialog = (mode, facility = null) => {
+    setMode(mode);
+    if (mode === "update" && facility) {
+      reset({ name: facility.name });
+    } else {
+      reset({ name: "" });
+    }
+    setIsFacilityDialogOpen(true);
+    handleCloseMenu();
   };
-  const handleCloseAddDialog = () => {
-    setIsAddDialogOpen(false);
+
+  const handleCloseFacilityDialog = () => {
+    setIsFacilityDialogOpen(false);
     reset();
+    setSelectedFacility(null);
   };
-  const onSubmitAdd = async (formData) => {
-    await addFacility(formData.name);
-    handleCloseAddDialog();
+
+  const onSubmitFacility = async (data) => {
+    if (mode === "add") {
+      await addFacility(data.name);
+    } else {
+      await updateFacility(selectedFacility._id, { name: data.name });
+    }
+    handleCloseFacilityDialog();
   };
 
   return (
@@ -104,7 +119,7 @@ export default function FacilityList() {
         </Box>
         <Button
           variant="contained"
-          onClick={handleOpenAddDialog}
+          onClick={() => handleOpenFacilityDialog("add")}
           sx={{
             backgroundColor: "#203FC7",
             borderRadius: "8px",
@@ -214,7 +229,9 @@ export default function FacilityList() {
             View
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem
+          onClick={() => handleOpenFacilityDialog("update", selectedFacility)}
+        >
           <EditOutlinedIcon sx={{ color: "#203FC7", fontSize: 20 }} />
           <Typography variant="body2" sx={{ color: "#1F263E" }}>
             Edit
@@ -302,10 +319,10 @@ export default function FacilityList() {
         </DialogContent>
       </Dialog>
 
-      {/*================= Add Facility Modal ==================*/}
+      {/*================= Facility Modal (Add / Update) ==================*/}
       <Dialog
-        open={isAddDialogOpen}
-        onClose={handleCloseAddDialog}
+        open={isFacilityDialogOpen}
+        onClose={handleCloseFacilityDialog}
         maxWidth="sm"
         fullWidth
         PaperProps={{
@@ -322,9 +339,9 @@ export default function FacilityList() {
           }}
         >
           <Typography variant="h5" sx={{ fontWeight: "700", color: "#333" }}>
-            Add Facility
+            {mode === "add" ? "Add Facility" : "Update Facility"}
           </Typography>
-          <IconButton onClick={handleCloseAddDialog} size="small">
+          <IconButton onClick={handleCloseFacilityDialog} size="small">
             <CloseIcon
               sx={{
                 color: "red",
@@ -338,7 +355,11 @@ export default function FacilityList() {
         </Box>
 
         <DialogContent sx={{ mt: 2 }}>
-          <Box component="form" onSubmit={handleSubmit(onSubmitAdd)} noValidate>
+          <Box
+            component="form"
+            onSubmit={handleSubmit(onSubmitFacility)}
+            noValidate
+          >
             <TextField
               fullWidth
               placeholder="Name"
@@ -374,7 +395,7 @@ export default function FacilityList() {
                   },
                 }}
               >
-                Save
+                {mode === "add" ? "Save" : "Update"}
               </Button>
             </Box>
           </Box>

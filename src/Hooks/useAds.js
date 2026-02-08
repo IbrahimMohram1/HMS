@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 export default function useAds() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+
   const getAds = async () => {
     setLoading(true);
     try {
@@ -42,9 +43,24 @@ const [total, setTotal] = useState(0);
       toast.error(error.response?.data?.message);
     }
   };
+  const updateAds = async (id, data) => {
+    console.log("Updating Ad ID:", id, "Payload:", data);
+    try {
+      let response = await axiosClient.put(`/api/v0/admin/ads/${id}`, data);
+      toast.success(response.data.message);
+      getAds();
+    } catch (error) {
+      console.error(
+        "Update Ads Error Response:",
+        JSON.stringify(error.response?.data),
+      );
+      toast.error(error.response?.data?.message || "Failed to update ad");
+    }
+  };
+
   useEffect(() => {
     getAds();
   }, []);
 
-  return { data, total, getAds, loading, deleteAds, addAds };
+  return { data, total, getAds, loading, deleteAds, addAds, updateAds };
 }
