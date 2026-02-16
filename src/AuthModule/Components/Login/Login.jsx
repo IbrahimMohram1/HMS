@@ -12,9 +12,10 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+
 import loginImg from "../../../assets/images/Login.jpg";
 import useAuth from "../../../Hooks/useAuth";
-import { Link } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -33,12 +34,22 @@ export default function Login() {
 
   const { login } = useAuth();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
-      await login(data);
-      console.log("Login Success");
+      const decoded = await login(data);
+
+      if (decoded?.role === "admin") {
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       console.log("error", err);
     }
@@ -59,6 +70,7 @@ export default function Login() {
           <Typography variant="h5" sx={{ fontWeight: 800, color: "#152C5B" }}>
             Stay<span style={{ color: "#3252df" }}>cation.</span>
           </Typography>
+
           <Box
             sx={{
               margin: "auto",
@@ -90,10 +102,7 @@ export default function Login() {
 
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               {/* Email */}
-              <Typography
-                variant="standard"
-                sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}
-              >
+              <Typography sx={{ fontWeight: 600, color: "#152C5B", mb: 1 }}>
                 Email Address
               </Typography>
 
@@ -109,7 +118,6 @@ export default function Login() {
 
               {/* Password */}
               <Typography
-                variant="subtitle2"
                 sx={{ fontWeight: 600, color: "#152C5B", mb: 1, mt: 2 }}
               >
                 Password
@@ -121,7 +129,9 @@ export default function Login() {
                 placeholder="Please type here ..."
                 variant="standard"
                 autoComplete="current-password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: "Password is required",
+                })}
                 error={!!errors.password}
                 helperText={errors.password?.message}
                 InputProps={{
@@ -140,7 +150,6 @@ export default function Login() {
 
               <Link to="/forgetpass" style={{ textDecoration: "none" }}>
                 <Typography
-                  variant="body2"
                   sx={{ mt: 1, color: "#4D4D4D", textAlign: "right" }}
                 >
                   Forgot Password ?
@@ -164,7 +173,7 @@ export default function Login() {
           </Box>
         </Grid>
 
-        {/* Image – hidden on mobile */}
+        {/* Image */}
         <Grid
           size={{ xs: 12, md: 6 }}
           sx={{ display: { xs: "none", md: "block" } }}
