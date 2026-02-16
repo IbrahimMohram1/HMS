@@ -34,27 +34,23 @@ export default function useAuth() {
       toast.error(error?.response?.data?.message || "Registration failed");
     }
   };
-
   const login = async (data) => {
     try {
       localStorage.removeItem("access_token");
+
       const response = await axiosClient.post(
         "/api/v0/portal/users/login",
         data,
       );
-      const { token, user } = response.data.data;
+
+      const { token } = response.data.data;
 
       localStorage.setItem("access_token", token);
+
       const decoded = jwtDecode(token.replace("Bearer ", ""));
       setUser(decoded);
-      console.log("Decoded JWT:", decoded);
 
       toast.success(response.data.message || "Login successful");
-      if (decoded.role === "admin") {
-        navigate("/dashboard");
-      } else {
-        navigate("/"); // Adjust this path as needed for regular users
-      }
 
       return decoded;
     } catch (err) {
