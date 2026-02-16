@@ -16,6 +16,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 
 import loginImg from "../../../assets/images/Login.jpg";
 import useAuth from "../../../Hooks/useAuth";
+import { useAuthAction } from "../../../Context/AuthActionContext";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -33,6 +34,7 @@ export default function Login() {
   } = useForm({ mode: "onBlur" });
 
   const { login } = useAuth();
+  const { runSavedAction } = useAuthAction();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,6 +46,11 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       const decoded = await login(data);
+
+      // Execute any saved action (e.g., adding to favorites, etc.)
+      if (runSavedAction) {
+        runSavedAction();
+      }
 
       if (decoded?.role === "admin") {
         navigate("/dashboard", { replace: true });

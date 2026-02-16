@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import AuthLayout from "./Shared/AuthLayout/AuthLayout";
 import NotFound from "./Shared/NotFound/NotFound";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./AuthModule/Components/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,13 +29,39 @@ import AdsList from "./ADSModule/Components/ADSList/ADSList";
 import UserLayout from "./Shared/UserLayout/UserLayout";
 import LandingPage from "./LandingModule/LandingPage";
 import AllRooms from "./LandingModule/AllRooms/AllRooms";
-import Favorites from "./LandingModule/Favorites/Favorites";
+import { AuthActionProvider } from "./Context/AuthActionContext";
+import { setNavigator } from "./navigationService";
+
+// NavigationHandler component for setting global navigator
+function NavigationHandler() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setNavigator(navigate);
+  }, [navigate]);
+
+  return null;
+}
+
+// Wrapper component that provides AuthActionProvider inside router context
+function RootLayout({ children }) {
+  return (
+    <AuthActionProvider>
+      <NavigationHandler />
+      {children}
+    </AuthActionProvider>
+  );
+}
 
 function App() {
   let routes = createBrowserRouter([
     {
       path: "auth",
-      element: <AuthLayout />,
+      element: (
+        <RootLayout>
+          <AuthLayout />
+        </RootLayout>
+      ),
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login /> },
@@ -45,9 +75,11 @@ function App() {
     {
       path: "/dashboard",
       element: (
-        <AdminProtectedRoute allowedRoles={["admin"]}>
-          <DashboardLayout />
-        </AdminProtectedRoute>
+        <RootLayout>
+          <AdminProtectedRoute allowedRoles={["admin"]}>
+            <DashboardLayout />
+          </AdminProtectedRoute>
+        </RootLayout>
       ),
       children: [
         {
@@ -77,16 +109,16 @@ function App() {
     },
     {
       path: "",
-      element: <UserLayout />,
+      element: (
+        <RootLayout>
+          <UserLayout />
+        </RootLayout>
+      ),
       children: [
         { index: true, element: <LandingPage /> },
         {
           path: "All-rooms",
           element: <AllRooms />,
-        },
-        {
-          path: "favorites",
-          element: <Favorites />,
         },
       ],
     },
@@ -104,7 +136,7 @@ function App() {
           pauseOnHover
           theme="colored"
         />
-        <RouterProvider router={routes}></RouterProvider>
+        <RouterProvider router={routes} />
       </AuthContextProvider>
     </>
   );
