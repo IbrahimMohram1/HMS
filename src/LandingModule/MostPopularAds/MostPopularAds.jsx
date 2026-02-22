@@ -4,10 +4,12 @@ import FavoriteIcon from "@mui/icons-material/FavoriteBorder";
 import VisibilityIcon from "@mui/icons-material/VisibilityOutlined";
 import useDetails from "../../Hooks/useDetails";
 import useFavorites from "../../Hooks/useFavorites";
+import { useNavigate } from "react-router-dom";
 
 export default function MostPopularAds() {
   const { data } = useDetails();
   const { addFavorite } = useFavorites();
+  const navigate = useNavigate();
 
   if (!data || data.length === 0) return null;
 
@@ -56,6 +58,9 @@ export default function MostPopularAds() {
         <FavoriteIcon />
       </IconButton>
       <IconButton
+        onClick={() => {
+          navigate(`/details/${ad.room._id}`);
+        }}
         sx={{
           color: "white",
           bgcolor: "rgba(255, 255, 255, 0.2)",

@@ -13,7 +13,7 @@ export default function useRooms() {
   const fetchRooms = useCallback(async (page = 1, size = 20) => {
     const res = await axiosClient.get(
       `/api/v0/admin/rooms?page=${page}&size=${size}`,
-      { headers: getHeaders() }
+      { headers: getHeaders() },
     );
 
     return {
@@ -23,61 +23,60 @@ export default function useRooms() {
   }, []);
 
   const getRoomById = useCallback(async (id) => {
-    const res = await axiosClient.get(
-      `/api/v0/admin/rooms/${id}`,
-      { headers: getHeaders() }
-    );
+    const res = await axiosClient.get(`/api/v0/admin/rooms/${id}`, {
+      headers: getHeaders(),
+    });
     return res.data.data.room;
   }, []);
 
-  const createRoom = useCallback(async (formData) => {
-    try {
-      const res = await axiosClient.post(
-        `/api/v0/admin/rooms`,
-        formData,
-        {
+  const createRoom = useCallback(
+    async (formData) => {
+      try {
+        const res = await axiosClient.post(`/api/v0/admin/rooms`, formData, {
           headers: {
             ...getHeaders(),
             "Content-Type": "multipart/form-data",
           },
-        }
-      );
-      navigate("/dashboard/rooms");
-      return res.data;
-    } catch (error) {
-      toast.error("Failed to add room ❌");
-      throw error;
-    }
-  }, [navigate]);
+        });
+        navigate("/dashboard/rooms");
+        return res.data;
+      } catch (error) {
+        toast.error("Failed to add room ❌");
+        throw error;
+      }
+    },
+    [navigate],
+  );
 
-  const updateRoom = useCallback(async (id, formData) => {
-    try {
-      const res = await axiosClient.put(
-        `/api/v0/admin/rooms/${id}`,
-        formData,
-        {
-          headers: {
-            ...getHeaders(),
-            "Content-Type": "multipart/form-data",
+  const updateRoom = useCallback(
+    async (id, formData) => {
+      try {
+        const res = await axiosClient.put(
+          `/api/v0/admin/rooms/${id}`,
+          formData,
+          {
+            headers: {
+              ...getHeaders(),
+              "Content-Type": "multipart/form-data",
+            },
           },
-        }
-      );
+        );
 
-     
-      navigate("/dashboard/rooms");
-      return res.data;
-    } catch (error) {
-   error.error("Failed to update room ❌");
-      throw error;
-    }
-  }, [navigate]);
+        navigate("/dashboard/rooms");
+        return res.data;
+      } catch (error) {
+        error.error("Failed to update room ❌");
+        throw error;
+      }
+    },
+    [navigate],
+  );
 
   const deleteRoom = useCallback(async (id) => {
     try {
-      const res = await axiosClient.delete(
-        `/api/v0/admin/rooms/${id}`,
-        { headers: getHeaders() }
-      );
+      const res = await axiosClient.delete(`/api/v0/admin/rooms/${id}`, {
+        headers: getHeaders(),
+      });
 
       return res.data;
     } catch (error) {
@@ -87,10 +86,9 @@ export default function useRooms() {
   }, []);
 
   const fetchFacilities = useCallback(async () => {
-    const res = await axiosClient.get(
-      `/api/v0/admin/room-facilities`,
-      { headers: getHeaders() }
-    );
+    const res = await axiosClient.get(`/api/v0/admin/room-facilities`, {
+      headers: getHeaders(),
+    });
     return res.data.data.facilities;
   }, []);
 

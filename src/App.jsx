@@ -31,6 +31,8 @@ import LandingPage from "./LandingModule/LandingPage";
 import AllRooms from "./LandingModule/AllRooms/AllRooms";
 import { AuthActionProvider } from "./Context/AuthActionContext";
 import { setNavigator } from "./navigationService";
+import Favorites from './LandingModule/Favorites/Favorites';
+import Details from "./LandingModule/Details/Details";
 
 // NavigationHandler component for setting global navigator
 function NavigationHandler() {
@@ -120,6 +122,15 @@ function App() {
           path: "All-rooms",
           element: <AllRooms />,
         },
+        {
+          path: "favorites",
+          element: <Favorites />,
+        },
+        {
+          path:"details/:roomId",
+          element:<Details />
+        }
+
       ],
     },
   ]);

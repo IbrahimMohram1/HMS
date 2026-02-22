@@ -3,6 +3,7 @@ import axiosClient from "./../Api/AxiosClient";
 
 export default function useDetails() {
   const [data, setData] = useState([]);
+  //============================ Get All Ads ===============================
   const getAllDetails = async () => {
     try {
       // call api to get details;
@@ -13,6 +14,9 @@ export default function useDetails() {
       console.log(error);
     }
   };
+
+
+  
 
   useEffect(() => {
     getAllDetails();
