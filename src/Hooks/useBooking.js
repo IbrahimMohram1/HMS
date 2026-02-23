@@ -5,6 +5,8 @@ import axiosClient from "../Api/AxiosClient";
 export const useBookingApi = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [bookingId, setBookingId] = useState(null);
+
   const [totalCount, setTotalCount] = useState(0);
   const getBookings = async () => {
     try {
@@ -20,5 +22,14 @@ export const useBookingApi = () => {
       console.error("Error fetching bookings:", error.message);
     }
   };
-  return { loading, data, getBookings, totalCount };
+  const createBooking = async (data) => {
+    try {
+      const response = await axiosClient.post(`/api/v0/portal/booking`, data);
+      setBookingId(response.data.data.booking._id);
+      console.log(response.data.data.booking._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return { loading, data, getBookings, totalCount, createBooking, bookingId };
 };

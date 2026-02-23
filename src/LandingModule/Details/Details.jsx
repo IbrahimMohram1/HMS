@@ -22,6 +22,8 @@ import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import placeholderImg from "../../assets/images/hotals1 (1).png";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import imgFacility1 from "../../assets/images/ic_bedroom.png";
 import imgFacility2 from "../../assets/images/ic_bathroom.png";
@@ -33,24 +35,46 @@ import imgFacility7 from "../../assets/images/ic_ref.png";
 import imgFacility8 from "../../assets/images/ic_tv.png";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { Controller, useForm } from "react-hook-form";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
+import { useBookingApi } from "../../Hooks/useBooking";
 
 export default function Details() {
   const { roomId } = useParams();
-  const navigate = useNavigate();
   const { getRoomDetailsById, roomDetails } = useLandingRooms();
+  const { createBooking } = useBookingApi();
   const [loading, setLoading] = useState(true);
-
-  // Booking state
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [value, onChange] = useState([new Date(), new Date()]);
 
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      startDate: null,
+      endDate: null,
+    },
+  });
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
+  const days =
+    startDate && endDate ? dayjs(endDate).diff(dayjs(startDate), "day") : 0;
+
+  const totalPrice = days > 0 ? days * roomDetails?.price : 0;
+  const onSubmit = (data) => {
+    const bookingData = {
+      startDate: dayjs(data.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(data.endDate).format("YYYY-MM-DD"),
+      room: roomId,
+      totalPrice: days * roomDetails.price,
+    };
+
+    createBooking(bookingData);
+  };
   useEffect(() => {
     const fetchDetails = async () => {
       setLoading(true);
@@ -59,14 +83,6 @@ export default function Details() {
     };
     fetchDetails();
   }, [roomId]);
-
-  const handleBooking = () => {
-    if (!startDate || !endDate) return;
-    // Navigate or handle booking logic here
-    alert(
-      `Booking room ${roomDetails?.roomNumber} from ${startDate} to ${endDate}`,
-    );
-  };
 
   if (loading) {
     return (
@@ -317,52 +333,108 @@ export default function Details() {
               {" "}
               Discount {roomDetails?.discount} % off
             </Typography>
-            <Box component="form">
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              {" "}
               <Typography className="section_title">Pick a Date</Typography>
-              <Box sx={{ width: "50%", display: "flex" }}>
-                <DateRangePicker
-                  minDate={new Date()}
-                  onChange={onChange}
-                  value={value}
-                />
-
-                <Typography
-                  variant="caption"
-                  sx={{
-                    background: "#152C5B",
-                    color: "#fff",
-                    display: "inline-block",
-                    height: "auto",
-                    padding: "8px",
-                  }}
-                >
-                  <CalendarMonthIcon />
+              <Box sx={{ mb: 5 }}>
+                <Typography sx={{ fontWeight: 600, mb: 3, fontSize: 20 }}>
+                  Start Booking
                 </Typography>
-                <Controller
-                  name="dateRange"
-                  control={control}
-                  defaultValue={[new Date(), new Date()]}
-                  rules={{
-                    required: "Date range is required",
-                  }}
-                  render={({ field }) => (
-                    <DateRangePicker
-                      {...field}
-                      minDate={new Date()}
-                      onChange={field.onChange}
-                      value={field.value}
-                      className="custom_width"
-                    />
-                  )}
-                />
-                {errors.dateRange && (
-                  <Typography color="error" variant="body2">
-                    {errors.dateRange.message}
-                  </Typography>
-                )}
-              </Box>
-              {/* end date controller */}
+                <Grid container spacing={3}>
+                  {/* ===== Pick a Date ===== */}
+                  <Grid item xs={12} sm={6}>
+                    <Typography sx={{ mb: 1, fontWeight: 500 }}>
+                      Pick a Date
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 2,
+                        }}
+                      >
+                        {/* ===== Start Date ===== */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            bgcolor: "#F5F6F8",
+                            borderRadius: 1,
+                            px: 1,
+                          }}
+                        >
+                          <CalendarMonthIcon sx={{ color: "#152C5B", mr: 1 }} />
 
+                          <Controller
+                            name="startDate"
+                            control={control}
+                            rules={{ required: "Start date is required" }}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                label="Start"
+                                minDate={dayjs()} // Disable past dates
+                                slotProps={{
+                                  textField: {
+                                    variant: "standard",
+                                    error: !!errors.startDate,
+                                    helperText: errors.startDate?.message,
+                                    InputProps: { disableUnderline: true },
+                                    sx: { width: "100%" },
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </Box>
+
+                        {/* ===== End Date ===== */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            bgcolor: "#F5F6F8",
+                            borderRadius: 1,
+                            px: 1,
+                          }}
+                        >
+                          <CalendarMonthIcon sx={{ color: "#152C5B", mr: 1 }} />
+
+                          <Controller
+                            name="endDate"
+                            control={control}
+                            rules={{ required: "End date is required" }}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                label="End"
+                                minDate={watch("startDate") || dayjs()}
+                                slotProps={{
+                                  textField: {
+                                    variant: "standard",
+                                    error: !!errors.endDate,
+                                    helperText: errors.endDate?.message,
+                                    InputProps: { disableUnderline: true },
+                                    sx: { width: "100%" },
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </Box>
+                      </Box>
+                    </LocalizationProvider>
+                  </Grid>
+                </Grid>
+                <Typography variant="subtitle2" sx={{ mt: 3 }}>
+                  {days > 0 && (
+                    <Typography sx={{ fontWeight: 600 }}>
+                      {days} Nights × ${roomDetails.price} = ${totalPrice}
+                    </Typography>
+                  )}
+                </Typography>
+              </Box>
               <Button
                 type="submit"
                 variant="contained"
